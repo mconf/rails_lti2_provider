@@ -1,4 +1,4 @@
-class CreateRailsLti2ProviderToolProxies < ActiveRecord::Migration[4.2.10]
+class CreateRailsLti2ProviderToolProxies < ActiveRecord::Migration[4.2]
   def change
     create_table :rails_lti2_provider_tool_proxies do |t|
       t.string :uuid
