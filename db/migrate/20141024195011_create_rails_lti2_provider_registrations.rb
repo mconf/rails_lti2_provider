@@ -1,4 +1,4 @@
-class CreateRailsLti2ProviderRegistrations < ActiveRecord::Migration[4.2.10][4.2.10]
+class CreateRailsLti2ProviderRegistrations < ActiveRecord::Migration[4.2.10]
   def change
     create_table :rails_lti2_provider_registrations do |t|
       t.string :uuid
