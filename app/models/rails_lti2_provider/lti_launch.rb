@@ -7,7 +7,7 @@ module RailsLti2Provider
     def self.check_launch(lti_message)
       tool = Tool.find_by_uuid(lti_message.oauth_consumer_key)
       raise Unauthorized.new(:invalid_key) unless tool
-      raise Unauthorized.new(:invalid_signature) unless lti_message.valid_signature?(tool.shared_secret)
+      raise Unauthorized.new(:invalid_signature) unless authenticator(lti_message, tool.shared_secret).valid_signature?
       raise Unauthorized.new(:invalid_nonce) if tool.lti_launches.where(nonce: lti_message.oauth_nonce).count > 0
       raise Unauthorized.new(:request_to_old) if  DateTime.strptime(lti_message.oauth_timestamp,'%s') < 5.minutes.ago
       tool.lti_launches.where('created_at > ?', 1.day.ago).delete_all
@@ -16,6 +16,14 @@ module RailsLti2Provider
 
     def message
       IMS::LTI::Models::Messages::Message.generate(read_attribute(:message))
+    end
+
+    def authenticator(lti_message, shared_secret)
+      IMS::LTI::Services::MessageAuthenticator.new(
+          lti_message.launch_url,
+          lti_message.params,
+          shared_secret,
+      )
     end
 
     class Unauthorized < StandardError;
