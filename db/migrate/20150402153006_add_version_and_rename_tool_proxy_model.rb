@@ -1,4 +1,4 @@
-class AddVersionAndRenameToolProxyModel < ActiveRecord::Migration
+class AddVersionAndRenameToolProxyModel < ActiveRecord::Migration[4.2.10]
   def change
     rename_table :rails_lti2_provider_tool_proxies, :rails_lti2_provider_tools
     add_column :rails_lti2_provider_tools, :lti_version, :string

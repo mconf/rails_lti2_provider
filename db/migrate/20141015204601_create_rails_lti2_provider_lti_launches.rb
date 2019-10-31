@@ -1,4 +1,4 @@
-class CreateRailsLti2ProviderLtiLaunches < ActiveRecord::Migration
+class CreateRailsLti2ProviderLtiLaunches < ActiveRecord::Migration[4.2.10][4.2.10]
   def change
     create_table :rails_lti2_provider_lti_launches do |t|
       t.string :tool_proxy_id
