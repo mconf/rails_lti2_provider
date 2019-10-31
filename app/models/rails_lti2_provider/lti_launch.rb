@@ -20,7 +20,7 @@ module RailsLti2Provider
       IMS::LTI::Models::Messages::Message.generate(read_attribute(:message))
     end
 
-    def authenticator(request_params, launch_url, shared_secret)
+    def self.authenticator(request_params, launch_url, shared_secret)
       IMS::LTI::Services::MessageAuthenticator.new(
           request_params,
           launch_url,
