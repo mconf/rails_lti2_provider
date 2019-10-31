@@ -1,13 +1,15 @@
+require 'ims/lti'
+
 module RailsLti2Provider
   class LtiLaunch < ActiveRecord::Base
     validates_presence_of :tool_id, :nonce
     belongs_to :tool
     serialize :message
 
-    def self.check_launch(lti_message)
+    def self.check_launch(lti_message, request_params, url)
       tool = Tool.find_by_uuid(lti_message.oauth_consumer_key)
       raise Unauthorized.new(:invalid_key) unless tool
-      raise Unauthorized.new(:invalid_signature) unless authenticator(lti_message, tool.shared_secret).valid_signature?
+      raise Unauthorized.new(:invalid_signature) unless authenticator(request_params, url, tool.shared_secret).valid_signature?
       raise Unauthorized.new(:invalid_nonce) if tool.lti_launches.where(nonce: lti_message.oauth_nonce).count > 0
       raise Unauthorized.new(:request_to_old) if  DateTime.strptime(lti_message.oauth_timestamp,'%s') < 5.minutes.ago
       tool.lti_launches.where('created_at > ?', 1.day.ago).delete_all
@@ -18,10 +20,10 @@ module RailsLti2Provider
       IMS::LTI::Models::Messages::Message.generate(read_attribute(:message))
     end
 
-    def authenticator(lti_message, shared_secret)
+    def authenticator(request_params, launch_url, shared_secret)
       IMS::LTI::Services::MessageAuthenticator.new(
-          lti_message.launch_url,
-          lti_message.params,
+          request_params,
+          launch_url,
           shared_secret,
       )
     end
