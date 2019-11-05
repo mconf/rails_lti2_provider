@@ -93,7 +93,7 @@ module RailsLti2Provider
       end
     end
 
-    def self.update(registration, controller)
+    def self.reregister(registration, controller)
       registration_request = registration.registration_request
       raise 'ToolProxyAlreadyRegisteredException' if [:registered, :rereg_pending].include?(registration.workflow_state)
       registration_service = IMS::LTI::Services::ToolProxyRegistrationService.new(registration_request)

@@ -4,7 +4,7 @@ module RailsLti2Provider
     def lti_authentication
       lti_message = IMS::LTI::Models::Messages::Message.generate(request.request_parameters)
       lti_message.launch_url = request.url
-      @lti_launch = RailsLti2Provider::LtiLaunch.check_launch(lti_message, request.request_parameters)
+      @lti_launch = RailsLti2Provider::LtiLaunch.check_launch(lti_message)
     end
 
 
@@ -28,7 +28,7 @@ module RailsLti2Provider
 
     def register_proxy(registration)
       if registration.registration_request.is_a? IMS::LTI::Models::Messages::ToolProxyUpdateRequest
-        RailsLti2Provider::ToolProxyRegistration.update(registration, self)
+        RailsLti2Provider::ToolProxyRegistration.reregister(registration, self)
       else
         RailsLti2Provider::ToolProxyRegistration.register(registration, self)
       end
