@@ -3,7 +3,7 @@ module RailsLti2Provider
     validates :correlation_id, uniqueness: true, allow_nil: true
     serialize :tool_proxy_json, JSON
     serialize :registration_request_params, JSON
-    belongs_to :tool
+    belongs_to :tool, optional: true
 
     def register
 
