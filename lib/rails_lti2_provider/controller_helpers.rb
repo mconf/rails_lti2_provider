@@ -7,7 +7,6 @@ module RailsLti2Provider
       @lti_launch = RailsLti2Provider::LtiLaunch.check_launch(lti_message)
     end
 
-
     def disable_xframe_header
       response.headers.except! 'X-Frame-Options'
     end

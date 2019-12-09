@@ -17,7 +17,7 @@ Gem::Specification.new do |s|
   s.add_dependency "rails", "~> 6.0.0"
   s.add_dependency "ims-lti", "~> 2.3.0"
 
-  s.add_development_dependency "pg"
+  s.add_development_dependency "sqlite3"
   s.add_development_dependency "rspec-rails"
 
 end
