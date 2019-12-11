@@ -9,8 +9,9 @@ module RailsLti2Provider
       IMS::LTI::Models::ToolProxy.from_json(tool_settings)
     end
 
-    def self.find_by_issuer(issuer)
-      Tool.find_by(uuid: issuer)
+    def self.find_by_issuer(issuer, options = {})
+      options['uuid'] = issuer
+      Tool.find_by(options)
     end
   end
 end
