@@ -10,8 +10,20 @@ module RailsLti2Provider
     end
 
     def self.find_by_issuer(issuer, options = {})
-      options['uuid'] = issuer
-      Tool.find_by(options)
+      if options.any?
+        Tool.where(uuid: issuer).each do |tool|
+          tool_settings = JSON.parse(tool.tool_settings)
+          match = true
+          options.each do |key, value|
+            if tool_settings[key] != options[key]
+              match = false
+            end
+          end
+          return tool if match
+        end
+      else
+        Tool.find_by(uuid: issuer)
+      end
     end
   end
 end
