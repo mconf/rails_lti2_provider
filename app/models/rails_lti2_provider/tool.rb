@@ -11,6 +11,7 @@ module RailsLti2Provider
 
     def self.find_by_issuer(issuer, options = {})
       if options.any?
+        puts options.inspect
         Tool.where(uuid: issuer).each do |tool|
           tool_settings = JSON.parse(tool.tool_settings)
           match = true
@@ -21,6 +22,7 @@ module RailsLti2Provider
           end
           return tool if match
         end
+        nil
       else
         Tool.find_by(uuid: issuer)
       end
