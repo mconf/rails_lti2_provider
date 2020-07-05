@@ -12,8 +12,14 @@ module RailsLti2Provider
       raise Unauthorized.new(:invalid_signature) unless IMS::LTI::Services::MessageAuthenticator.new(lti_message.launch_url, lti_message.post_params.merge(lti_message.oauth_params), tool.shared_secret).valid_signature?
       raise Unauthorized.new(:invalid_nonce) if tool.lti_launches.where(nonce: lti_message.oauth_nonce).count > 0
       raise Unauthorized.new(:request_too_old) if  DateTime.strptime(lti_message.oauth_timestamp,'%s') < 5.minutes.ago
-      tool.lti_launches.where('created_at > ?', 1.day.ago).delete_all
-      tool.lti_launches.create!(nonce: lti_message.oauth_nonce, message: lti_message.post_params)
+
+      launches = tool.lti_launches.where('created_at < ?', 1.day.ago)
+      Rails.logger.info "Removing the old launches #{launches.pluck(:id)}"
+      launches.delete_all
+
+      launch = tool.lti_launches.create!(nonce: lti_message.oauth_nonce, message: lti_message.post_params)
+      Rails.logger.info "Launch created launch=#{launch.inspect}"
+      launch
     end
 
     def message
