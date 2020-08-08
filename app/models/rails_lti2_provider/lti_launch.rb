@@ -8,8 +8,14 @@ module RailsLti2Provider
 
     def self.check_launch(lti_message)
       tool = Tool.find_by_uuid(lti_message.oauth_consumer_key)
+      all_params = lti_message.post_params.merge(lti_message.oauth_params)
+
+      Rails.logger.info "Checking launch for consumer_key=#{tool&.uuid} " \
+                        "secret=#{tool&.shared_secret} launch_url=#{lti_message.launch_url} " \
+                        "params=#{all_params.to_json}"
+
       raise Unauthorized.new(:invalid_key) unless tool
-      raise Unauthorized.new(:invalid_signature) unless IMS::LTI::Services::MessageAuthenticator.new(lti_message.launch_url, lti_message.post_params.merge(lti_message.oauth_params), tool.shared_secret).valid_signature?
+      raise Unauthorized.new(:invalid_signature) unless IMS::LTI::Services::MessageAuthenticator.new(lti_message.launch_url, all_params, tool.shared_secret).valid_signature?
       raise Unauthorized.new(:invalid_nonce) if tool.lti_launches.where(nonce: lti_message.oauth_nonce).count > 0
       raise Unauthorized.new(:request_too_old) if  DateTime.strptime(lti_message.oauth_timestamp,'%s') < 5.minutes.ago
 
