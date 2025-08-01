@@ -3,7 +3,7 @@
 module RailsLti2Provider
   class Tool < ApplicationRecord
     validates :shared_secret, :uuid, :tool_settings, :lti_version, presence: true
-    serialize :tool_settings
+    serialize :tool_settings, coder: JSON
     belongs_to :tenant, inverse_of: :tools
     has_many :lti_launches, dependent: :restrict_with_exception
     has_many :registrations, dependent: :restrict_with_exception

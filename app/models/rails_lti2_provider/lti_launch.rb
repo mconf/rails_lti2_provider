@@ -6,7 +6,7 @@ module RailsLti2Provider
   class LtiLaunch < ApplicationRecord
     validates :tool_id, :nonce, presence: true
     belongs_to :tool
-    serialize :message
+    serialize :message, coder: JSON
 
     def self.check_launch(lti_message)
       tool = Tool.find_by_uuid(lti_message.oauth_consumer_key)
