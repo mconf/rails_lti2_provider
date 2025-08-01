@@ -1,9 +1,11 @@
-class CreateRailsLti2ProviderLtiLaunches < ActiveRecord::Migration[4.2]
+# frozen_string_literal: true
+
+class CreateRailsLti2ProviderLtiLaunches < ActiveRecord::Migration[6.1]
   def change
-    create_table :rails_lti2_provider_lti_launches do |t|
-      t.string :tool_proxy_id
-      t.string :nonce
-      t.text :message
+    create_table(:rails_lti2_provider_lti_launches) do |t|
+      t.string(:tool_proxy_id)
+      t.string(:nonce)
+      t.text(:message)
 
       t.timestamps
     end
