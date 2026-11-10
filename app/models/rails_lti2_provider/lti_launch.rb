@@ -12,8 +12,7 @@ module RailsLti2Provider
       tool = Tool.find_by_uuid(lti_message.oauth_consumer_key)
       all_params = lti_message.post_params.merge(lti_message.oauth_params)
 
-      Rails.logger.info "Checking launch for consumer_key=#{tool&.uuid} " \
-                        "secret=#{tool&.shared_secret} launch_url=#{lti_message.launch_url} " \
+      Rails.logger.info "Checking launch for consumer_key=#{tool&.uuid} launch_url=#{lti_message.launch_url} " \
                         "params=#{all_params.to_json}"
 
       raise Unauthorized, :invalid_key unless tool
